@@ -55,7 +55,7 @@ def run_cross_sectional_backtest(features_path: str):
         max_confidence = selected_allocation['prob_outperform']
         
         # THE FIX: The Absolute Confidence Cash Filter
-        CONFIDENCE_THRESHOLD = 0.52
+        CONFIDENCE_THRESHOLD = 0.60
         
         if max_confidence >= CONFIDENCE_THRESHOLD:
             # Trade executed
