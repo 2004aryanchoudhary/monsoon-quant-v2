@@ -1,3 +1,4 @@
+import joblib
 import pandas as pd
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
@@ -52,6 +53,10 @@ def train_panel_classifier(features_path: str):
     }).sort_values(by='Importance', ascending=False)
     print("\nGlobal Sector Feature Importance Rankings:")
     print(feat_imp.to_string(index=False))
+
+    # Save the trained model for the live Streamlit dashboard
+    joblib.dump(model, "monsoon_xgboost.joblib")
+    print("Model successfully exported to monsoon_xgboost.joblib")
 
 if __name__ == "__main__":
     train_panel_classifier("data/raw/processed_features.csv")

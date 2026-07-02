@@ -1,23 +1,11 @@
-import os
-import subprocess
-import sys
-
-# --- FORCED CLOUD INSTALLATION ---
-# This forces Streamlit to install shap and matplotlib at runtime if it missed them
-try:
-    import shap
-    import matplotlib.pyplot as plt
-except ModuleNotFoundError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "shap", "matplotlib"])
-    import shap
-    import matplotlib.pyplot as plt
-# ---------------------------------
-
 import streamlit as st
 import pandas as pd
 import altair as alt
 import joblib
 import numpy as np
+import os
+import shap
+import matplotlib.pyplot as plt
 from db_handler import get_trade_history
 
 # Configure the page layout
