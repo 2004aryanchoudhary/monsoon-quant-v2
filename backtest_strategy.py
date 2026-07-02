@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from db_handler import save_signal
 from xgboost import XGBClassifier
 
 def run_cross_sectional_backtest(features_path: str):
@@ -78,6 +79,14 @@ def run_cross_sectional_backtest(features_path: str):
                   f"Top Pick: {ticker_traded.ljust(13)} | "
                   f"Confidence: {max_confidence*100:.2f}% | "
                   f"Forward Return: {strat_return*100:+.2f}%")
+            
+            # --- NEW: Save to production database (Forcing native Python floats) ---
+            save_signal(
+                checkpoint.strftime('%Y-%m-%d'), 
+                ticker_traded, 
+                float(max_confidence), 
+                float(strat_return)
+            )
 
     # Compute compounding portfolio metrics over time
     cum_strategy = np.prod(1 + np.array(strategy_returns)) - 1
