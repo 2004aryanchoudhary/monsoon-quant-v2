@@ -16,7 +16,11 @@ st.markdown("This institutional-grade model uses domestic weather anomalies and 
 st.divider()
 
 # Create standard terminal tabs
-tab1, tab2 = st.tabs(["📊 Cross-Sectional Backtest", "🎛️ Live ML Inference Engine (What-If)"])
+tab1, tab2, tab3 = st.tabs([
+    "📊 Cross-Sectional Backtest", 
+    "🎛️ Live ML Inference Engine", 
+    "🏦 Live Execution Ledger"
+])
 
 # ==========================================
 # TAB 1: HISTORICAL BACKTEST
@@ -143,3 +147,34 @@ with tab2:
             # Adjust layout to fit Streamlit cleanly
             plt.tight_layout()
             st.pyplot(fig)
+
+# ==========================================
+# TAB 3: LIVE EXECUTION LEDGER (PAPER TRADING)
+# ==========================================
+with tab3:
+    st.subheader("🏦 Autonomous Execution Ledger")
+    st.markdown("This ledger tracks the live, forward-looking paper trades executed by the autonomous daily daemon.")
+    
+    from db_handler import get_paper_ledger
+    ledger_df = get_paper_ledger()
+    
+    if ledger_df.empty:
+        st.info("No paper trades have been executed yet. The daemon will log trades here at 3:15 PM.")
+    else:
+        # Calculate Total Virtual Capital Deployed
+        total_deployed = ledger_df['total_value'].sum()
+        
+        col_m1, col_m2 = st.columns(2)
+        with col_m1:
+            st.metric("Total Trades Executed", len(ledger_df))
+        with col_m2:
+            st.metric("Total Capital Deployed", f"₹{total_deployed:,.2f}")
+            
+        st.divider()
+        
+        # Format the dataframe nicely
+        display_ledger = ledger_df.copy()
+        display_ledger['fill_price'] = display_ledger['fill_price'].map("₹{:.2f}".format)
+        display_ledger['total_value'] = display_ledger['total_value'].map("₹{:.2f}".format)
+        
+        st.dataframe(display_ledger, use_container_width=True, hide_index=True)
